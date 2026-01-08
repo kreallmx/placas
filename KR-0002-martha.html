@@ -25,36 +25,87 @@
       <div class="actions">
         <a class="btn" href="tel:+529981310327">Llamar</a>
         <a class="btn wa" href="https://wa.me/5219981310327" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn locate" href="#" id="sendLocation">Enviar ubicación</a>
       </div>
 
-<div class="grid">
-  <div class="field">
-    <div class="label">Mi humano</div>
-    <div class="value">Karina Peraza</div>
-  </div>
-</div>
-
+      <div class="grid">
+        <div class="field">
+          <div class="label">Mi humano</div>
+          <div class="value">Karina Peraza</div>
+        </div>
+      </div>
 
       <div class="grid">
         <div class="field">
           <div class="label">Zona</div>
-          <div class="value">SM. 23</div>
+          <div class="value">Sm. 23</div>
         </div>
 
         <div class="field">
           <div class="label">Notas</div>
-          <div class="value">Respondo a mi nombre, soy muy miedosa, no soy agresiva. Me gusta que me hablen bonito y me den sobresitos. Ya estoy esterilizada</div>
+          <div class="value">Respondo a mi nombre, soy muy miedosa, no soy agresiva. Me gusta que me hablen bonito y me den sobresitos. Ya estoy esterilizada.</div>
         </div>
       </div>
 
       <div class="small">
         Diseñado por Kreall ·
         <a class="sutil" href="https://www.instagram.com/kreall.mx/" target="_blank" rel="noopener">Instagram</a>
-<a class="sutil" href="https://www.facebook.com/kreall.mx/" target="_blank" rel="noopener">Facebook</a>
-
+        <a class="sutil" href="https://www.facebook.com/kreall.mx/" target="_blank" rel="noopener">Facebook</a>
       </div>
     </section>
 
   </main>
+
+  <script>
+    // WhatsApp del dueño (sin +, sin espacios)
+    // Debe coincidir con el WhatsApp al que quieres que llegue la ubicación
+    const OWNER_WA = "5219981310327";
+
+    const btn = document.getElementById("sendLocation");
+
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      if (!navigator.geolocation) {
+        alert("Tu teléfono no soporta la función de ubicación.");
+        return;
+      }
+
+      const originalText = btn.textContent;
+      btn.textContent = "Obteniendo ubicación...";
+      btn.style.opacity = "0.9";
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          const petName = (document.querySelector(".h1")?.textContent || "tu mascota").trim();
+          const mapsLink = `https://maps.google.com/?q=${lat},${lon}`;
+
+          const msg = encodeURIComponent(
+            `Hola, encontré a ${petName}. Estoy aquí: ${mapsLink}`
+          );
+
+          // Abre WhatsApp con el mensaje listo
+          window.location.href = `https://wa.me/${OWNER_WA}?text=${msg}`;
+        },
+        (err) => {
+          btn.textContent = originalText;
+          btn.style.opacity = "1";
+
+          if (err.code === 1) {
+            alert("Necesitas permitir el acceso a tu ubicación para enviarla.");
+          } else if (err.code === 2) {
+            alert("No se pudo obtener tu ubicación. Intenta de nuevo en un lugar con mejor señal.");
+          } else {
+            alert("Se tardó demasiado en obtener la ubicación. Intenta otra vez.");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    });
+  </script>
+
 </body>
 </html>

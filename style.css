@@ -169,3 +169,24 @@ a{color:inherit}
 .sutil:hover{
   border-bottom-color: rgba(63,81,52,.55);
 }
+
+.actions{
+  grid-template-columns:1fr;
+}
+
+@media (min-width: 420px){
+  .actions{
+    grid-template-columns:1fr 1fr;
+  }
+  .btn.locate{
+    grid-column: 1 / -1; /* ocupa todo el ancho */
+  }
+}
+
+/* Estilo del botón de ubicación */
+.btn.locate{
+  background: rgba(63,81,52,.85);
+  color:#fff;
+  box-shadow: 0 8px 18px rgba(63,81,52,.22);
+}
+
